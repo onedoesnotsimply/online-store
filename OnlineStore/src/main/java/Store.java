@@ -20,76 +20,112 @@ public class Store {
     public static void main(String[] args) {
         // Populate the inventory
         readFromFile("products.csv");
+        System.out.println("Welcome to The Online Store!");
         homeMenu();
     }
 
     public static void homeMenu() {
-        System.out.println("Welcome to The Online Store!");
-        while(true){
+        while (true) {
 
             System.out.println("What would you like to do?\n\t" +
                     "1) Display Products\n\t" +
                     "2) Display Cart\n\t" +
                     "3) Exit");
 
-                    int choice = scanner.nextInt();
+            int choice = scanner.nextInt();
 
-                    switch (choice) {
-                        case 1:
-                            displayProducts();
-                            break;
-                        case 2:
-                            // display cart
-                            System.out.println(cart.getItems());
-                            break;
-                        case 3:
-                            return;
+            switch (choice) {
+                case 1:
+                    displayProducts();
+                    break;
+                case 2:
+                    // display cart
+                    if (!cart.getItems().isEmpty()) {
+                        System.out.println(cart.getItems());
+                        System.out.println("Would you like to Remove an Item? (Y/N)");
+                        scanner.nextLine();
+                        String remove = scanner.nextLine();
+                        if (remove.equalsIgnoreCase("y")) {
+                            System.out.println("Enter the name of the item you want to remove");
+                            String itemName = scanner.nextLine();
+                            for (Product item : inventory) {
+                                if (item.getName().equalsIgnoreCase(itemName)){
+                                    cart.removeFromCart(item);
+                                    System.out.println("Item removed");
+                                    break;
+                                }
+
+                            }
+                        }
+                    } else {
+                        System.out.println("You have no items in your cart");
+                        homeMenu();
+                        //continue;
                     }
+                    break;
+
+                case 3:
+                    scanner.close();
+                    return;
+
+            }
 
 
-                }
+        }
     }
 
     public static void displayProducts() {
-        for (Product item : inventory){
+        for (Product item : inventory) {
             System.out.println(item.toString());
 
         }
         System.out.println(" ");
         System.out.println("What would you like to do?");
         System.out.println("\t1) Search or filter items\n\t" +
-                "2) Add an item to your cart\n\t" +
-                "3) Return to home screen");
+                "2) Return to home screen");
 
         int choice = scanner.nextInt();
 
-        switch (choice){
+        switch (choice) {
             case 1:
                 searchInventory();
                 break;
             case 2:
-                //addToCart();
-                break;
-            case 3:
                 break;
         }
 
     }
 
     public static void searchInventory() {
+        scanner.nextLine();
+        System.out.print("Please enter the name of the item: ");
+        String item = scanner.nextLine();
 
+        for (Product product : inventory) {
+            if (product.getName().equalsIgnoreCase(item)) {
+                System.out.println(product.toString());
+
+                System.out.println("Add to cart? (Y/N)");
+                String add = scanner.nextLine();
+                if (add.equalsIgnoreCase("y")) {
+                    cart.addToCart(product);
+                    homeMenu();
+                }
+            }
+        }
+        System.out.println("Item not found");
     }
 
 
-    public static void readFromFile(String filename){
+    public static void readFromFile(String filename) {
         // Try to open the file
-        try{
+        try {
             BufferedReader bfr = new BufferedReader(new FileReader("products.csv"));
             String input;
             boolean skippedHeader = false;
 
-            while ((input = bfr.readLine()) != null){
-                if (!skippedHeader){
+            while ((input = bfr.readLine()) != null) {
+                if (!skippedHeader) {
                     skippedHeader = true;
                     continue;
                 }
@@ -117,7 +153,7 @@ public class Store {
         String department = tokens[3];
 
         // Creates the product
-        Product product = new Product(sku, name, price,department);
+        Product product = new Product(sku, name, price, department);
 
         // Adds the product to csvInventory
         inventory.add(product);
