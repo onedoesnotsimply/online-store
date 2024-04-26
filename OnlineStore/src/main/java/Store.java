@@ -29,10 +29,14 @@ public class Store {
     public static void homeMenu() {
         while (true) {
 
-            System.out.println("What would you like to do?\n\t" +
-                    "1) Display Products\n\t" +
-                    "2) Display Cart\n\t" +
-                    "3) Exit");
+            System.out.println("""
+                    What would you like to do?
+                    \t\
+                    1) Display Products
+                    \t\
+                    2) Display Cart
+                    \t\
+                    3) Exit""");
 
             int choice = scanner.nextInt();
 
@@ -59,10 +63,14 @@ public class Store {
             System.out.println(cart.getItems());
             System.out.println(cart.getTotalPrice());
 
-            System.out.println("What would you like to do?\n\t" +
-                    "1) Remove Item\n\t" +
-                    "2) Check Out\n\t" +
-                    "3) Return to Main Menu");
+            System.out.println("""
+                    What would you like to do?
+                    \t\
+                    1) Remove Item
+                    \t\
+                    2) Check Out
+                    \t\
+                    3) Return to Main Menu""");
 
             int choice = scanner.nextInt();
 
@@ -98,7 +106,7 @@ public class Store {
     }
 
     public static void checkOut() {
-        System.out.println("Sales total: $"+cart.getTotalPrice());
+        System.out.println("Sales total: $" + cart.getTotalPrice());
 
         System.out.print("Please enter cash amount: $");
         double payment = scanner.nextDouble();
@@ -110,8 +118,12 @@ public class Store {
             LocalDateTime purchaseDate = LocalDateTime.now();
 
 
-            System.out.println(purchaseDate+"\n"+cart.getItems()+"\n"+cart.getTotalPrice()+"\n"+payment+"\n"+change);
-            for (Product item : inventory){
+            System.out.printf(purchaseDate.format(formatter) + "\n"
+                    + cart.getItems()
+                    + "\n" + cart.getTotalPrice()
+                    + "\n" + payment
+                    + "\n%.2f\n", change);
+            for (Product item : inventory) {
 
                 cart.removeFromCart(item);
             }
@@ -123,10 +135,14 @@ public class Store {
         for (Product item : inventory) {
             System.out.println(item.toString());
         }
-        System.out.println("\nWhat would you like to do?");
-        System.out.println("\t1) Search for items\n\t" +
-                "2) Filter items\n\t" +
-                "3) Return to home screen");
+        System.out.println("""
+                \nWhat would you like to do?
+                \t\
+                1) Search for items
+                \t\
+                2) Filter items
+                \t\
+                3) Return to home screen""");
 
         int choice = scanner.nextInt();
 
@@ -145,7 +161,7 @@ public class Store {
 
     public static void searchInventory() {
         scanner.nextLine();
-        System.out.print("Choose item: ");
+        System.out.print("Please enter the name of the item: ");
         String item = scanner.nextLine();
 
         for (Product product : inventory) {
@@ -163,12 +179,15 @@ public class Store {
         System.out.println("Item not found");
     }
 
-        public static void filterInventory() {
-            System.out.println("What would you like to filter by?\n\t" +
-                    "1) Price range\n\t" +
-                    "2) Department");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+    public static void filterInventory() {
+        System.out.println("""
+                What would you like to filter by?
+                \t\
+                1) Price range
+                \t\
+                2) Department""");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
 
         if (choice == 1) {
             filterByPriceRange();
