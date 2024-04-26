@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -103,8 +104,11 @@ public class Store {
         double payment = scanner.nextDouble();
 
         if (payment >= cart.getTotalPrice()) {
-            double change = (payment-cart.getTotalPrice());
+            double change = (payment - cart.getTotalPrice());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, MMM d, yyyy  hh:mm");
             LocalDateTime purchaseDate = LocalDateTime.now();
+
 
             System.out.println(purchaseDate+"\n"+cart.getItems()+"\n"+cart.getTotalPrice()+"\n"+payment+"\n"+change);
             for (Product item : inventory){
@@ -166,83 +170,84 @@ public class Store {
             int choice = scanner.nextInt();
             scanner.nextLine();
 
-            if (choice == 1) {
-                filterByPriceRange();
-            } else if (choice == 2) {
-                filterByDepartment();
-            } else {
-                System.out.println("Invalid choice");
-                homeMenu();
-            }
-        }
-
-        public static void filterByPriceRange() {
-            float minPrice;
-            float maxPrice;
-            System.out.println("Please enter the minimum price of the product: ");
-            minPrice = scanner.nextFloat();
-            System.out.println("Please enter the maximum price of the product: ");
-            maxPrice = scanner.nextFloat();
-            for (Product product : inventory) {
-                if (product.getPrice() >= minPrice && product.getPrice() <= maxPrice) {
-                    System.out.println(product);
-                }
-            }
-            searchInventory();
-        }
-
-        public static void filterByDepartment() {
-
-            System.out.println("Please enter the department you would like to filter by: ");
-            String department = scanner.nextLine();
-
-            for (Product item : inventory) {
-                if (item.getDepartment().equalsIgnoreCase(department)) {
-                    System.out.println(item.toString());
-                }
-            }
-            searchInventory();
-        }
-
-        public static void readFromFile (){
-            // Try to open the file
-            try {
-                BufferedReader bfr = new BufferedReader(new FileReader("products.csv"));
-                String input;
-                boolean skippedHeader = false;
-
-                while ((input = bfr.readLine()) != null) {
-                    if (!skippedHeader) {
-                        skippedHeader = true;
-                        continue;
-                    }
-                    // Populate the CSV inventory
-                    getCSVInventory(input);
-                }
-                bfr.close();
-
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException();
-            }
-        }
-
-        // Populate the CSV inventory
-        public static void getCSVInventory (String input){
-            // split the input
-            String[] tokens = input.split("\\|");
-
-            // Parse the tokens
-            String sku = tokens[0];
-            String name = tokens[1];
-            double price = Double.parseDouble(tokens[2]);
-            String department = tokens[3];
-
-            // Creates the product
-            Product product = new Product(sku, name, price, department);
-
-            // Adds the product to csvInventory
-            inventory.add(product);
+        if (choice == 1) {
+            filterByPriceRange();
+        } else if (choice == 2) {
+            filterByDepartment();
+        } else {
+            System.out.println("Invalid choice");
+            homeMenu();
         }
     }
+
+    public static void filterByPriceRange() {
+        float minPrice;
+        float maxPrice;
+        System.out.println("Please enter the minimum price of the product: ");
+        minPrice = scanner.nextFloat();
+        System.out.println("Please enter the maximum price of the product: ");
+        maxPrice = scanner.nextFloat();
+        for (Product product : inventory) {
+            if (product.getPrice() >= minPrice && product.getPrice() <= maxPrice) {
+                System.out.println(product);
+            }
+        }
+        searchInventory();
+    }
+
+    public static void filterByDepartment() {
+
+        System.out.println("Please enter the department you would like to filter by: ");
+        String department = scanner.nextLine();
+        for (Product item : inventory) {
+            if (item.getDepartment().equalsIgnoreCase(department)) {
+                System.out.println(item.toString());
+
+            }
+        }
+        System.out.println("Press Enter to pick item.");
+        searchInventory();
+    }
+
+    public static void readFromFile() {
+        // Try to open the file
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader("products.csv"));
+            String input;
+            boolean skippedHeader = false;
+
+            while ((input = bfr.readLine()) != null) {
+                if (!skippedHeader) {
+                    skippedHeader = true;
+                    continue;
+                }
+                // Populate the CSV inventory
+                getCSVInventory(input);
+            }
+            bfr.close();
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    // Populate the CSV inventory
+    public static void getCSVInventory(String input) {
+        // split the input
+        String[] tokens = input.split("\\|");
+
+        // Parse the tokens
+        String sku = tokens[0];
+        String name = tokens[1];
+        double price = Double.parseDouble(tokens[2]);
+        String department = tokens[3];
+
+        // Creates the product
+        Product product = new Product(sku, name, price, department);
+
+        // Adds the product to csvInventory
+        inventory.add(product);
+    }
+}
